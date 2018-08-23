@@ -10,16 +10,26 @@
  */
 
 import React from 'react';
+import io from 'socket.io-client';
 import { FormattedMessage } from 'react-intl';
-import messages from './messages';
+import './styles.scss';
 
 /* eslint-disable react/prefer-stateless-function */
 export default class HomePage extends React.PureComponent {
+  componentDidMount() {
+    const socket = io('http://localhost:3000');
+    socket.on('connect', () => {
+      console.log('socket connected');
+    });
+    socket.on('buttons', data => {
+      console.log('buttons', data);
+    });
+  }
   render() {
     return (
-      <h1>
-        <FormattedMessage {...messages.header} />
-      </h1>
+      <div className="home-page">
+        <img src="/static/images/nes.svg" />
+      </div>
     );
   }
 }
