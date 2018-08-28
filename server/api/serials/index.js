@@ -2,8 +2,11 @@ const express = require('express');
 const router = express.Router();
 
 const SerialPort = require('serialport');
+const TagLengthValue = require('./protocols/TagLengthValue');
 
 let port;
+
+const TAGS = ['NES'];
 
 router.get('/', (req, res, next) => {
   SerialPort.list()
@@ -30,9 +33,13 @@ router.post('/connect', (req, res, next) => {
     port = undefined;
   }
   port = new SerialPort(comName, { autoOpen: false });
+  port.pipe(new TagLengthValue());
   port.on('data', data => {
-    console.log('data', data);
-    req.io.emit('buttons', data.toString());
+    req.io.emit('buttons', {
+      tag: TAGS[data[0]],
+      length: data[1] + 0,
+      value: data[data[1] + 1] + 0,
+    });
   });
 
   port.open(err => {
