@@ -17,13 +17,19 @@ import { find, map, times } from 'lodash';
 import { get, post } from 'api/client';
 import './styles.scss';
 
+const defaultButtonStyle = {
+  position: 'absolute',
+};
+
 const getBit = (number, bitPosition) =>
   (number & (1 << bitPosition)) === 0 ? 0 : 1;
 
 export default class HomePage extends React.PureComponent {
   state = {
+    config: { skins: {} },
     serials: [],
     isLoading: true,
+    buttonMap: [],
   };
 
   componentDidMount() {
@@ -34,9 +40,9 @@ export default class HomePage extends React.PureComponent {
     });
     socket.on('buttons', data => {
       const { length, value } = data;
-      const buttonMap = {};
+      const buttonMap = [];
       times(length * 8, i => {
-        buttonMap[`button-${i + 1}`] = getBit(value, i) === 0;
+        buttonMap[i] = getBit(value, i) === 0;
       });
       this.setState({
         buttonMap,
@@ -44,7 +50,9 @@ export default class HomePage extends React.PureComponent {
     });
 
     get('/api/serials')
-      .then(serials => this.setState({ serials, isLoading: false }))
+      .then((serials) => this.setState({ serials }))
+      .then(() => get('/api/config'))
+      .then((config) => this.setState({ config, isLoading: false }))
       .catch(() => this.setState({ isLoading: false }));
   }
 
@@ -57,17 +65,29 @@ export default class HomePage extends React.PureComponent {
   };
 
   render() {
-    const { buttonMap, isLoading, serials } = this.state;
+    const { buttonMap, isLoading, serials, config } = this.state;
     const connectedSerial = (find(serials, { connected: true }) || {}).comName;
+    const skin = find(config.skins.options, { id: config.skins.selected }) || { buttons: [] };
+
     return (
       <div className="home-page">
         <div className="controller">
           {map(
             buttonMap,
-            (value, key) =>
-              value && <span key={key} className={`${key} button`} />,
+            (value, index) => {
+              if (!value) {
+                // return null; // no component
+              }
+              const button = skin.buttons[index] || {};
+              const style = {
+                ...defaultButtonStyle,
+                ...button,
+                type: undefined,
+              };
+              return <span key={index} style={style} className={`button-${button.type}`} />
+            }
           )}
-          <img src="/static/images/nes.svg" />
+          <img alt={skin.name} src={skin.image} />
         </div>
         <div className="config container">
           <div className="row">

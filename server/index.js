@@ -34,6 +34,8 @@ app.use(
   require('./api/serials'),
 );
 
+app.use('/api/config', require('./api/config'));
+
 app.use('/static', express.static(path.resolve('static')));
 app.use(frontend());
 
