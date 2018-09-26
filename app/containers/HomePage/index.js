@@ -1,3 +1,4 @@
+/* eslint-disable no-bitwise no-console */
 /*
  * HomePage
  *
@@ -11,47 +12,104 @@
 
 import React from 'react';
 import io from 'socket.io-client';
-import classnames from 'classnames';
-import { map, times } from 'lodash';
-import { FormattedMessage } from 'react-intl';
+import { find, map, times } from 'lodash';
+
+import { get, post } from 'api/client';
 import './styles.scss';
 
 const getBit = (number, bitPosition) =>
   (number & (1 << bitPosition)) === 0 ? 0 : 1;
 
-/* eslint-disable react/prefer-stateless-function */
 export default class HomePage extends React.PureComponent {
-  state = {};
+  state = {
+    serials: [],
+    isLoading: true,
+  };
 
   componentDidMount() {
-    const socket = io(location.origin);
+    // handle socket io
+    const socket = io(window.location.origin);
     socket.on('connect', () => {
       console.log('socket connected');
     });
     socket.on('buttons', data => {
       const { length, value } = data;
-      console.log(data);
       const buttonMap = {};
       times(length * 8, i => {
         buttonMap[`button-${i + 1}`] = getBit(value, i) === 0;
       });
-      console.log(buttonMap);
       this.setState({
         buttonMap,
       });
     });
+
+    get('/api/serials')
+      .then(serials => this.setState({ serials, isLoading: false }))
+      .catch(() => this.setState({ isLoading: false }));
   }
 
+  connect = ({ comName }) => {
+    this.setState({ isLoading: true });
+    post('/api/serials/connect', { comName })
+      .then(() => get('/api/serials'))
+      .then(serials => this.setState({ serials, isLoading: false }))
+      .catch(() => this.setState({ isLoading: false }));
+  };
+
   render() {
-    const { buttonMap } = this.state;
+    const { buttonMap, isLoading, serials } = this.state;
+    const connectedSerial = (find(serials, { connected: true }) || {}).comName;
     return (
       <div className="home-page">
-        {map(
-          buttonMap,
-          (value, key) =>
-            value && <span key={key} className={`${key} button`} />,
-        )}
-        <img src="/static/images/nes.svg" />
+        <div className="controller">
+          {map(
+            buttonMap,
+            (value, key) =>
+              value && <span key={key} className={`${key} button`} />,
+          )}
+          <img src="/static/images/nes.svg" />
+        </div>
+        <div className="config container">
+          <div className="row">
+            <div>
+              <div className="dropdown">
+                <button
+                  className="btn btn-secondary dropdown-toggle"
+                  type="button"
+                  id="dropdownMenuButton"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  {connectedSerial || 'Select Serial Port'}
+                </button>
+                <div
+                  className="dropdown-menu"
+                  aria-labelledby="dropdownMenuButton"
+                >
+                  {map(serials, ({ comName }) => (
+                    <a
+                      key={comName}
+                      className="dropdown-item"
+                      href="#"
+                      onClick={() => this.connect({ comName })}
+                    >
+                      {comName}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div>
+              {connectedSerial ? (
+                <i className="far fa-check-circle green" />
+              ) : (
+                <i className="far fa-times-circle red" />
+              )}
+            </div>
+            <div>{isLoading && <i className="fas fa-spinner fa-spin" />}</div>
+          </div>
+        </div>
       </div>
     );
   }

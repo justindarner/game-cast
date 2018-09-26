@@ -1,5 +1,7 @@
+/** eslint-disable no-unused-vars */
 const express = require('express');
 const router = express.Router();
+const { get, map } = require('lodash');
 
 const SerialPort = require('serialport');
 const TagLengthValue = require('./protocols/TagLengthValue');
@@ -9,8 +11,16 @@ let port;
 const TAGS = ['NES'];
 
 router.get('/', (req, res, next) => {
+  const portName = get(port, 'path', false);
   SerialPort.list()
-    .then(serials => res.send(serials))
+    .then(serials =>
+      res.send(
+        map(serials, serial => ({
+          ...serial,
+          connected: serial.comName === portName,
+        })),
+      ),
+    )
     .catch(next);
 });
 
@@ -46,7 +56,6 @@ router.post('/connect', (req, res, next) => {
     if (err) {
       next({
         ...err,
-        status: 500,
       });
       return;
     }
@@ -63,7 +72,7 @@ router.post('/disconnect', (req, res, next) => {
 });
 
 router.use((err, req, res, next) => {
-  res.status(err.status).send(err);
+  res.status(err.status || 500).send(err);
 });
 
 module.exports = router;
