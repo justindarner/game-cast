@@ -35,7 +35,9 @@ export default class HomePage extends React.PureComponent {
     config: { skins: {} },
     serials: [],
     isLoading: true,
-    buttonMap: [true, true, true, true, true, true, true, true],
+    buttonMap: [
+      // true, true, true, true, true, true, true, true
+    ],
     selectedSkin: { buttons: [] },
     buttonFocus: undefined,
   };
