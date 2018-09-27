@@ -1,13 +1,12 @@
 const fs = require('fs');
-const path = require('path')
+const path = require('path');
 const express = require('express');
 const router = express.Router();
 
 const file = path.resolve('config.json');
 
-
 router.get('/', (req, res, next) => {
-  fs.readFile(file, 'utf8', function (err, data) {
+  fs.readFile(file, 'utf8', (err, data) => {
     if (err) {
       return next(err);
     }
@@ -16,7 +15,7 @@ router.get('/', (req, res, next) => {
 });
 
 router.post('/', (req, res, next) => {
-  fs.writeFile(file, req.body, (err) => {
+  fs.writeFile(file, JSON.stringify(req.body, null, 2), err => {
     if (err) {
       return next(err);
     }

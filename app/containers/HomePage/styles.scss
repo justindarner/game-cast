@@ -1,6 +1,12 @@
 .home-page {
   margin: 20px;
 
+  .controller-button {
+    &:focus {
+      border: 1px dashed white;
+    }
+  }
+
   .button-round {
     position: absolute;
 
@@ -24,5 +30,12 @@
 
   .green {
     color: 	#008B00;
+  }
+
+  .button-control-panel {
+    margin-top: 1rem;
+    width: 600px;
+    outline: dashed 2px white;
+    padding: 1rem;
   }
 }

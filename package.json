@@ -246,6 +246,8 @@
     "plop": "2.0.0",
     "pre-commit": "1.2.2",
     "prettier": "1.13.5",
+    "react-color": "^2.14.1",
+    "react-draggable": "^3.0.5",
     "react-test-renderer": "16.4.1",
     "rimraf": "2.6.2",
     "sass-loader": "^7.1.0",
