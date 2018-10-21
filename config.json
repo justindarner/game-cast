@@ -1,0 +1,94 @@
+{
+  "skins": {
+    "selected": "1b7a0562-ddee-4bc4-8fda-d4c302931f9e",
+    "options": [
+      {
+        "id": "1b7a0562-ddee-4bc4-8fda-d4c302931f9e",
+        "name": "Nes Default",
+        "image": "/static/images/nes.svg",
+        "buttons": [
+          {
+            "type": "round",
+            "style": {
+              "background": "rgba(255, 2, 27, 1)",
+              "width": "50px",
+              "height": "50px"
+            },
+            "x": 503,
+            "y": 173
+          },
+          {
+            "type": "round",
+            "style": {
+              "background": "rgba(255, 0, 0, 1)",
+              "width": "50px",
+              "height": "50px"
+            },
+            "x": "425",
+            "y": "174"
+          },
+          {
+            "type": "round",
+            "style": {
+              "background": "#ff0000",
+              "width": "50px",
+              "height": "23px"
+            },
+            "x": 236,
+            "y": 190
+          },
+          {
+            "type": "round",
+            "style": {
+              "background": "#ff0000",
+              "width": "50px",
+              "height": "23px"
+            },
+            "x": 320,
+            "y": 190
+          },
+          {
+            "type": "square",
+            "style": {
+              "background": "#ff0000",
+              "width": "40px",
+              "height": "20px"
+            },
+            "x": 101,
+            "y": 110
+          },
+          {
+            "type": "square",
+            "style": {
+              "background": "#ff0000",
+              "width": "40px",
+              "height": "20px"
+            },
+            "x": 101,
+            "y": 207
+          },
+          {
+            "type": "square",
+            "style": {
+              "background": "#ff0000",
+              "width": "20px",
+              "height": "40px"
+            },
+            "x": 60,
+            "y": 149
+          },
+          {
+            "type": "square",
+            "style": {
+              "background": "#ff0000",
+              "width": "20px",
+              "height": "40px"
+            },
+            "x": 159,
+            "y": 149
+          }
+        ]
+      }
+    ]
+  }
+}

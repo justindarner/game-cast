@@ -3,7 +3,6 @@ coverage
 build
 node_modules
 stats.json
-config.json
 
 # Cruft
 .DS_Store
